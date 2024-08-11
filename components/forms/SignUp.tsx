@@ -12,6 +12,7 @@ import UiFormField from "./UiFormField"
 import SubmitButton from "./SubmitButton"
 import { useState, useEffect } from "react"
 import { SignUpFormSchema } from "@/lib/form-validation"
+import { createUser } from "@/lib/actions/patient.actions"
 
 export enum UiFormFieldType {
     INPUT = 'input',
@@ -36,10 +37,12 @@ export default function SignUp() {
         },
     })
 
-    function onSubmit({ name, email, phone }: z.infer<typeof SignUpFormSchema>) {
+    async function onSubmit({ name, email, phone }: z.infer<typeof SignUpFormSchema>, event: React.FormEvent) {
+        event.preventDefault();
         setIsLoading(true)
         try {
-            const user = { name, email, phone }
+            const userData = { name, email, phone }
+            const user = await createUser(userData)
             console.log(user)
         } catch (e) {
             console.error(e);
@@ -48,8 +51,12 @@ export default function SignUp() {
         }
     }
 
+    const handleSubmit = (event: React.FormEvent) => {
+        form.handleSubmit((data) => onSubmit(data, event))(event)
+    }
+
     return (<Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 flex-1">
+        <form onSubmit={handleSubmit} className="space-y-6 flex-1">
             <section className="mb-12 space-y-4">
                 <h1 className="header">Hello there 🙋🏻‍♂️</h1>
                 <p className="text-dark-700">Schedule your first appointment</p>

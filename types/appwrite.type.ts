@@ -1,7 +1,7 @@
 import { Models } from "node-appwrite";
 import { Gender, Status } from ".";
 
-export interface Patient extends Models.Document {
+export type Patient =  Models.Document & {
   userId: string;
   name: string;
   email: string;
@@ -25,7 +25,7 @@ export interface Patient extends Models.Document {
   privacyConsent: boolean;
 }
 
-export interface Appointment extends Models.Document {
+export type Appointment = Models.Document & {
   patient: Patient;
   schedule: Date;
   status: Status;
