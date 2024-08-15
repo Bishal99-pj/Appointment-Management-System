@@ -13,19 +13,10 @@ import { useState, useEffect } from "react"
 import { SignUpFormSchema } from "@/lib/form-validation"
 import { createUser } from "@/lib/actions/patient.actions"
 import { useRouter } from "next/router"
+import { User } from "@/types"
+import { UiFormFieldType } from "./SignUp"
 
-export enum UiFormFieldType {
-    INPUT = 'input',
-    TEXTAREA = 'textarea',
-    CHECKBOX = 'checkbox',
-    RADIO = 'radio',
-    SELECT = 'select',
-    DATE_PICKER = 'datePicker',
-    PHONE_INPUT = 'phoneInput',
-    SKELETON = 'skeleton'
-}
-
-export default function SignUp() {
+export default function RegisterForm({user} : {user: User}) {
     const [isLoading, setIsLoading] = useState(false)
 
     const form = useForm<z.infer<typeof SignUpFormSchema>>({
@@ -68,20 +59,6 @@ export default function SignUp() {
                 iconSrc="/assets/icons/user.svg"
                 iconAlt="user"
                 fieldType={UiFormFieldType.INPUT} control={form.control}
-            />
-            <UiFormField
-                name="email" label="Email"
-                placeholder="ada.lovelace@gmail.com"
-                iconSrc="/assets/icons/email.svg"
-                iconAlt="email"
-                fieldType={UiFormFieldType.INPUT} control={form.control}
-            />
-            <UiFormField
-                name="phone" label="Phone number"
-                placeholder="(123) 456-7890"
-                iconSrc="/assets/icons/phone.svg"
-                iconAlt="phone"
-                fieldType={UiFormFieldType.PHONE_INPUT} control={form.control}
             />
             <SubmitButton loading={isLoading}>Get started</SubmitButton>
         </form>
