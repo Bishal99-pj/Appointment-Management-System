@@ -1,15 +1,15 @@
 import SignUp from "@/components/forms/SignUp";
-import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import Link from "next/link";
 
 export default function Home() {
   return (
-    <div className="flex min-h-screen flex-col">
+    <div className="flex flex-col xl:flex-row min-h-screen">
       {/* OTP verification */}
       <section className="remove-scrollbar container my-auto">
         <div className="sub-container max-w-[500px]">
           <Image className="mb-12 h-10 w-fit" src="/assets/icons/logo-full.svg" width={1000} height={1000} alt="logo" />
+          
           <SignUp />
 
           <div className="text-14-regular mt-20 flex justify-between">

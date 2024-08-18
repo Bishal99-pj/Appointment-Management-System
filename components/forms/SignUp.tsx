@@ -12,7 +12,7 @@ import SubmitButton from "./SubmitButton"
 import { useState, useEffect } from "react"
 import { SignUpFormSchema } from "@/lib/form-validation"
 import { createUser } from "@/lib/actions/patient.actions"
-import { useRouter } from "next/router"
+import { useRouter } from "next/navigation"
 
 export enum UiFormFieldType {
     INPUT = 'input',
@@ -26,6 +26,7 @@ export enum UiFormFieldType {
 }
 
 export default function SignUp() {
+    const router = useRouter()
     const [isLoading, setIsLoading] = useState(false)
 
     const form = useForm<z.infer<typeof SignUpFormSchema>>({
@@ -43,7 +44,6 @@ export default function SignUp() {
         try {
             const userData = { name, email, phone }
             const user = await createUser(userData)
-            const router = useRouter()
             if(user) router.push(`/patients/${user.$id}/register`)
         } catch (e) {
             console.error(e);
