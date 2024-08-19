@@ -42,9 +42,9 @@ export const registerUser = async ({ identificationDocument, ...user }: Register
             identificationDocument.get('blobFile') as Blob,
             identificationDocument.get('fileName') as string
         )
-        
+
         file = await aw_storage.createFile(STORAGE_ID, ID.unique(), inputFile)
-        
+
         const registeredUser = await aw_databases.createDocument(
             APPWRITE_DATABASE_ID,
             APPWRITE_PATIENT_COLLECTION_ID,
@@ -64,14 +64,25 @@ export const registerUser = async ({ identificationDocument, ...user }: Register
 
 export const getRegisteredUser = async (userId: string) => {
     try {
-        const user = await aw_databases.listDocuments(
+        /*  TODO: Inspect the reason of listDocs not working */
+
+        // const user = await aw_databases.listDocuments(
+        //     APPWRITE_DATABASE_ID,
+        //     APPWRITE_PATIENT_COLLECTION_ID,
+        //     [
+        //         Query.equal('userId', [userId])
+        //     ]
+        // )
+
+        const registeredUser = await aw_databases.getDocument(
             APPWRITE_DATABASE_ID,
             APPWRITE_PATIENT_COLLECTION_ID,
-            [
-                Query.equal('userId', [userId])
-            ]
+            userId
         )
-        return parseStringify<Models.Document>(user.documents[0])
+
+        if (!registeredUser) throw new AppwriteException("User not found", 404)
+
+        return parseStringify<Models.Document>(registeredUser)
     } catch (err) {
         if (err instanceof AppwriteException)
             console.error(err)

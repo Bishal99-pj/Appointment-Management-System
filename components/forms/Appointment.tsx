@@ -9,13 +9,15 @@ import {
 } from "@/components/ui/form"
 import UiFormField from "./UiFormField"
 import SubmitButton from "./SubmitButton"
-import { useState } from "react"
-import { CreateAppointmentSchema } from "@/lib/form-validation"
-import { createUser } from "@/lib/actions/patient.actions"
+import React, { useState } from "react"
 import { useRouter } from "next/navigation"
-import { Doctors } from "@/constants"
 import { SelectItem } from "../ui/select"
 import Image from "next/image"
+
+import { Doctors } from "@/constants"
+import { getAppointmentSchema } from "@/lib/form-validation"
+import { CreateAppointmentParams, Status } from "@/types"
+import { createAppointment } from "@/lib/actions/appointment.actions"
 
 export enum UiFormFieldType {
     INPUT = 'input',
@@ -28,21 +30,74 @@ export enum UiFormFieldType {
     SKELETON = 'skeleton'
 }
 
-export default function AppointmentForm({ type, userId, patientId }: { type: 'create' | 'cancel', userId: string, patientId: string }) {
+export default function AppointmentForm({ type, userId, patientId }: { type: 'create' | 'cancel' | 'schedule', userId: string, patientId: string }) {
     const router = useRouter()
     const [isLoading, setIsLoading] = useState(false)
 
-    const form = useForm<z.infer<typeof CreateAppointmentSchema>>({
-        resolver: zodResolver(CreateAppointmentSchema),
+    let buttonLabel: string = ''
+
+    switch (type) {
+        case 'create':
+            buttonLabel = 'Create Appointment'
+            break
+        case 'cancel':
+            buttonLabel = 'Cancel Appointment'
+            break
+        case 'schedule':
+            buttonLabel = 'Schedule Appointment'
+            break
+    }
+
+    const AppointmentSchema = getAppointmentSchema(type)
+
+    const form = useForm<z.infer<typeof AppointmentSchema>>({
+        resolver: zodResolver(AppointmentSchema),
         defaultValues: {
+            primaryPhysician: "",
+            schedule: new Date(),
+            reason: "",
+            note: "",
+            cancellationReason: "",
         },
     })
 
-    async function onSubmit(formData: z.infer<typeof CreateAppointmentSchema>, event: React.FormEvent) {
-        event.preventDefault();
+    async function onSubmit(formData: z.infer<typeof AppointmentSchema>, event: React.FormEvent) {
+        event.preventDefault()
         setIsLoading(true)
-        try {
+        let status: Status;
 
+        switch (type) {
+            case 'cancel':
+                status = 'cancelled'
+                break
+            case 'schedule':
+                status = 'scheduled'
+                break
+            default:
+                status = 'pending'
+                break
+        }
+
+        try {
+            if (type === 'create' && patientId) {
+
+                const appointmentData: CreateAppointmentParams = {
+                    userId,
+                    patient: patientId,
+                    primaryPhysician: formData.primaryPhysician,
+                    schedule: formData.schedule,
+                    reason: formData.reason as string,
+                    note: formData.note,
+                    status
+                }
+
+                const appointment = await createAppointment(appointmentData)
+
+                if(appointment){
+                    form.reset();
+                    router.push(`/users/${userId}/new-appointment/success?appointmentId=${appointment.$id}`)
+                }
+            }
         } catch (e) {
             console.error(e);
         } finally {
@@ -61,7 +116,16 @@ export default function AppointmentForm({ type, userId, patientId }: { type: 'cr
                 <p className="text-dark-700">Schedule your appointment</p>
             </section>
 
-            {(type !== 'cancel' &&
+            {(type === 'cancel' ?
+                <>
+                    <UiFormField
+                        fieldType={UiFormFieldType.TEXTAREA}
+                        control={form.control}
+                        name="cancellationReason"
+                        label="Reason for cancellation"
+                        placeholder="e.g I am unable to make an appointment"
+                    />
+                </> :
                 <>
                     {/* PRIMARY CARE PHYSICIAN */}
                     <UiFormField
@@ -100,13 +164,13 @@ export default function AppointmentForm({ type, userId, patientId }: { type: 'cr
                         dateFormat="MM/dd/yyyy - hh:mm aa"
                     />
 
-                    <div className="flex flex-col gap-6">
+                    <div className="flex flex-col gap-6 xl:flex-row">
                         <UiFormField
                             fieldType={UiFormFieldType.TEXTAREA}
                             control={form.control}
                             name="reason"
                             label="Reason for appointment"
-                            placeholder="Reason for appointment"
+                            placeholder="e.g I have fever since a few days "
                         />
 
                         <UiFormField
@@ -114,13 +178,17 @@ export default function AppointmentForm({ type, userId, patientId }: { type: 'cr
                             control={form.control}
                             name="note"
                             label="Notes"
-                            placeholder="Note"
+                            placeholder="e.g I could be a little late because of traffic"
                         />
                     </div>
                 </>
             )}
 
-            <SubmitButton loading={isLoading}>Get started</SubmitButton>
+            <SubmitButton
+                loading={isLoading}
+                className={type === 'cancel' ? 'shad-danger-btn' : 'shad-primary-btn'}
+            >{buttonLabel}</SubmitButton>
         </form>
-    </Form>)
+    </Form>
+    )
 }

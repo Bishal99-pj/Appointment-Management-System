@@ -4,6 +4,7 @@ import { SearchParamProps } from "@/types";
 import Image from "next/image";
 
 export default async function NewAppointment({ params: { userId } }: SearchParamProps) {
+
   const registeredUser = await getRegisteredUser(userId);
 
   return (
@@ -18,7 +19,7 @@ export default async function NewAppointment({ params: { userId } }: SearchParam
             patientId={registeredUser?.$id as string}
           />
 
-          <p className="justify-items-end text-dark-600">
+          <p className="copyright mt-6 lg:mt-10 py-12">
             © 2024. Appoint Ease | All rights reserved.
           </p>
         </div>
