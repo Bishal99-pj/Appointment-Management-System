@@ -2,7 +2,7 @@
 
 import { CreateUserParams, RegisterUserParams } from "@/types";
 import { APPWRITE_DATABASE_ID, APPWRITE_PATIENT_COLLECTION_ID, APPWRITE_PROJECT_ID, aw_databases, aw_storage, aw_users, BASE_URL, STORAGE_ID } from "../appwrite.config";
-import { AppwriteException, ID, Query } from "node-appwrite";
+import { AppwriteException, ID, Models, Query } from "node-appwrite";
 import { InputFile } from "node-appwrite/file";
 import { parseStringify } from "../utils";
 
@@ -25,7 +25,7 @@ export const createUser = async (user: CreateUserParams) => {
 export const getUser = async (userId: string) => {
     try {
         const user = await aw_users.get(userId)
-        return parseStringify(user)
+        return parseStringify<Models.User<Models.Preferences>>(user)
     } catch (err) {
         if (err instanceof AppwriteException)
             console.error(err)
@@ -45,8 +45,6 @@ export const registerUser = async ({ identificationDocument, ...user }: Register
         
         file = await aw_storage.createFile(STORAGE_ID, ID.unique(), inputFile)
         
-        console.log();
-
         const registeredUser = await aw_databases.createDocument(
             APPWRITE_DATABASE_ID,
             APPWRITE_PATIENT_COLLECTION_ID,
@@ -57,7 +55,23 @@ export const registerUser = async ({ identificationDocument, ...user }: Register
                 ...user
             }
         )
-        return parseStringify(registeredUser)
+        return parseStringify<Models.Document>(registeredUser)
+    } catch (err) {
+        if (err instanceof AppwriteException)
+            console.error(err)
+    }
+}
+
+export const getRegisteredUser = async (userId: string) => {
+    try {
+        const user = await aw_databases.listDocuments(
+            APPWRITE_DATABASE_ID,
+            APPWRITE_PATIENT_COLLECTION_ID,
+            [
+                Query.equal('userId', [userId])
+            ]
+        )
+        return parseStringify<Models.Document>(user.documents[0])
     } catch (err) {
         if (err instanceof AppwriteException)
             console.error(err)
