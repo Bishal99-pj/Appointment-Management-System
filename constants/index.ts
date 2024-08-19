@@ -1,14 +1,14 @@
 import { Gender } from "@/types";
 
-export const GenderOptions = ["Male", "Female", "Other"];
+export const GenderOptions = ["male", "female", "other"];
 
-export const PatientFormDefaultValues = {
+export const RegistrationFormDefaultValues = {
   firstName: "",
   lastName: "",
   email: "",
   phone: "",
   birthDate: new Date(Date.now()),
-  gender: "Male" as Gender,
+  gender: "male" as Gender,
   address: "",
   occupation: "",
   emergencyContactName: "",

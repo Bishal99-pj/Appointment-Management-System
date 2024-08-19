@@ -1,5 +1,3 @@
-/* eslint-disable no-unused-vars */
-
 import { Appointment } from "./appwrite.type";
 
 declare type SearchParamProps = {
@@ -7,7 +5,7 @@ declare type SearchParamProps = {
   searchParams: { [key: string]: string | ?string[] };
 };
 
-declare type Gender = "Male" | "Female" | "Other";
+declare type Gender = "male" | "female" | "other";
 declare type Status = "pending" | "scheduled" | "cancelled";
 
 declare type CreateUserParams = {
@@ -37,6 +35,8 @@ declare type RegisterUserParams = CreateUserParams & {
   identificationType?: string;
   identificationNumber?: string;
   identificationDocument?: FormData;
+  treatmentConsent: boolean;
+  disclosureConsent: boolean;
   privacyConsent: boolean;
 }
 

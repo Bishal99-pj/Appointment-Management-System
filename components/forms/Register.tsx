@@ -11,12 +11,12 @@ import {
 import UiFormField from "./UiFormField"
 import SubmitButton from "./SubmitButton"
 import { useState, useEffect } from "react"
-import { SignUpFormSchema } from "@/lib/form-validation"
-import { createUser } from "@/lib/actions/patient.actions"
+import { RegistrationFormSchema } from "@/lib/form-validation"
+import { createUser, registerUser } from "@/lib/actions/patient.actions"
 import { useRouter } from "next/navigation"
 import { User } from "@/types"
 import { UiFormFieldType } from "./SignUp"
-import { Doctors, GenderOptions, IdentificationTypes } from "@/constants"
+import { Doctors, GenderOptions, IdentificationTypes, RegistrationFormDefaultValues } from "@/constants"
 import { RadioGroup, RadioGroupItem } from "../ui/radio-group"
 import { Label } from "../ui/label"
 import { SelectItem } from "../ui/select"
@@ -27,21 +27,39 @@ export default function RegisterForm({ user }: { user: User }) {
     const router = useRouter()
     const [isLoading, setIsLoading] = useState(false)
 
-    const form = useForm<z.infer<typeof SignUpFormSchema>>({
-        resolver: zodResolver(SignUpFormSchema),
+    const form = useForm<z.infer<typeof RegistrationFormSchema>>({
+        resolver: zodResolver(RegistrationFormSchema),
         defaultValues: {
-            name: "",
-            email: "",
-            phone: ""
+            ...RegistrationFormDefaultValues,
+            name: user.name,
+            email: user.email,
+            phone: user.phone
         },
     })
 
-    async function onSubmit({ name, email, phone }: z.infer<typeof SignUpFormSchema>, event: React.FormEvent) {
+    async function onSubmit(formValues: z.infer<typeof RegistrationFormSchema>, event: React.FormEvent) {
         event.preventDefault();
         setIsLoading(true)
+
+        let registrationFormDoc;
+
+        if(formValues.identificationDocument && formValues.identificationDocument.length > 0){
+            const blobFile = new Blob([formValues.identificationDocument[0]], {
+                type: formValues.identificationDocument[0].type
+            })
+            registrationFormDoc = new FormData()
+            registrationFormDoc.append('blobFile', blobFile)
+            registrationFormDoc.append('fileName', formValues.identificationDocument[0].name)
+        }
         try {
-            const userData = { name, email, phone }
-            const user = await createUser(userData)
+            const registrationData = {
+                ...formValues, 
+                userId: user.$id,
+                birthDate: new Date(formValues.birthDate),
+                identificationDocument: registrationFormDoc
+            }
+            const registeredUser = await registerUser(registrationData)
+            if(registeredUser) router.push(`/users/${registeredUser.$id}/new-appointment`)
         } catch (e) {
             console.error(e);
         } finally {
@@ -70,7 +88,8 @@ export default function RegisterForm({ user }: { user: User }) {
                     placeholder="Jane Doe"
                     iconSrc="/assets/icons/user.svg"
                     iconAlt="user"
-                    fieldType={UiFormFieldType.INPUT} control={form.control}
+                    fieldType={UiFormFieldType.INPUT} 
+                    control={form.control}
                 />
 
                 {/* Email & Phone */}
@@ -118,7 +137,7 @@ export default function RegisterForm({ user }: { user: User }) {
                                     {GenderOptions.map((option, i) => (
                                         <div key={option + i} className="radio-group">
                                             <RadioGroupItem value={option} id={option} />
-                                            <Label htmlFor={option} className="cursor-pointer select-none">
+                                            <Label htmlFor={option} className="cursor-pointer capitalize select-none">
                                                 {option}
                                             </Label>
                                         </div>
