@@ -6,6 +6,7 @@ import { z } from "zod"
 
 import {
     Form,
+    FormControl,
 } from "@/components/ui/form"
 import UiFormField from "./UiFormField"
 import SubmitButton from "./SubmitButton"
@@ -15,6 +16,12 @@ import { createUser } from "@/lib/actions/patient.actions"
 import { useRouter } from "next/navigation"
 import { User } from "@/types"
 import { UiFormFieldType } from "./SignUp"
+import { Doctors, GenderOptions, IdentificationTypes } from "@/constants"
+import { RadioGroup, RadioGroupItem } from "../ui/radio-group"
+import { Label } from "../ui/label"
+import { SelectItem } from "../ui/select"
+import Image from "next/image"
+import FileUpload from "../FileUpload"
 
 export default function RegisterForm({ user }: { user: User }) {
     const router = useRouter()
@@ -95,7 +102,31 @@ export default function RegisterForm({ user }: { user: User }) {
                         name="birthDate"
                         label="Date of birth"
                     />
-                    {/* TODO: Gender radio group */}
+
+                    <UiFormField
+                        fieldType={UiFormFieldType.SKELETON}
+                        control={form.control}
+                        name="gender"
+                        label="Gender"
+                        renderSkeleton={(field) => (
+                            <FormControl>
+                                <RadioGroup
+                                    className="flex h-11 gap-6 xl:justify-between"
+                                    onValueChange={field.onChange}
+                                    defaultValue={field.value}
+                                >
+                                    {GenderOptions.map((option, i) => (
+                                        <div key={option + i} className="radio-group">
+                                            <RadioGroupItem value={option} id={option} />
+                                            <Label htmlFor={option} className="cursor-pointer select-none">
+                                                {option}
+                                            </Label>
+                                        </div>
+                                    ))}
+                                </RadioGroup>
+                            </FormControl>
+                        )}
+                    />
                 </div>
 
                 {/* Address & Occupation */}
@@ -141,7 +172,33 @@ export default function RegisterForm({ user }: { user: User }) {
                     <h2 className="sub-header">Medical Information</h2>
                 </div>
 
-                 {/* TODO: PRIMARY CARE PHYSICIAN dropdown */}
+                {/* PRIMARY CARE PHYSICIAN */}
+                <UiFormField
+                    fieldType={UiFormFieldType.SELECT}
+                    control={form.control}
+                    name="primaryPhysician"
+                    label="Primary physician"
+                    placeholder="Select a physician"
+                >
+                    {Doctors.map((doctor, i) => (
+                        <SelectItem
+                            key={doctor.name + i}
+                            value={doctor.name}
+                            className="hover:bg-dark-500 transition-colors"
+                        >
+                            <div className="flex cursor-pointer items-center gap-2">
+                                <Image
+                                    src={doctor.image}
+                                    width={32}
+                                    height={32}
+                                    alt={doctor.name}
+                                    className="rounded-full border border-dark-500"
+                                />
+                                <p>{doctor.name}</p>
+                            </div>
+                        </SelectItem>
+                    ))}
+                </UiFormField>
 
                 {/* INSURANCE & POLICY NUMBER */}
                 <div className="flex flex-col gap-6 xl:flex-row">
@@ -188,7 +245,7 @@ export default function RegisterForm({ user }: { user: User }) {
                         control={form.control}
                         name="familyMedicalHistory"
                         label="Family medical history (if relevant)"
-                        placeholder="Mother had brain cancer, Father has hypertension"
+                        placeholder="Grandfather had brain cancer"
                     />
 
                     <UiFormField
@@ -207,7 +264,27 @@ export default function RegisterForm({ user }: { user: User }) {
                 <div className="mb-9 space-y-1">
                     <h2 className="sub-header">Identification and Verfication</h2>
                 </div>
-                {/* TODO: ID TYPE dropdown */}
+
+                {/* ID TYPE */}
+
+                <UiFormField
+                    fieldType={UiFormFieldType.SELECT}
+                    control={form.control}
+                    name="identificationType"
+                    label="Identification Type"
+                    placeholder="Select identification type"
+                >
+                    {IdentificationTypes.map((idType, i) => (
+                        <SelectItem
+                            key={idType + i}
+                            value={idType}
+                            className="hover:bg-dark-500 transition-colors"
+                        >
+                            {idType}
+                        </SelectItem>
+                    ))}
+                </UiFormField>
+
                 <UiFormField
                     fieldType={UiFormFieldType.INPUT}
                     control={form.control}
@@ -215,7 +292,22 @@ export default function RegisterForm({ user }: { user: User }) {
                     label="Identification Number"
                     placeholder="123456789"
                 />
-                {/* TODO: Document upload */}
+
+                {/* Document upload */}
+
+                <UiFormField
+                    fieldType={UiFormFieldType.SKELETON}
+                    control={form.control}
+                    name="identificationDocument"
+                    label="Scanned copy of identification document(s)"
+                    renderSkeleton={(field) => (
+                        <FormControl>
+                            <FileUpload files={field.value}
+                                onChange={field.onChange}
+                            />
+                        </FormControl>
+                    )}
+                />
             </section>
 
             {/* CONSENT AND PRIVACY POLICY */}

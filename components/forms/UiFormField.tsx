@@ -16,6 +16,12 @@ import { UiFormFieldType } from './SignUp'
 import Image from 'next/image'
 import 'react-phone-number-input/style.css'
 import PhoneInput from 'react-phone-number-input'
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
+import { Select, SelectContent, SelectTrigger, SelectValue } from '../ui/select'
+import { Textarea } from '../ui/textarea'
+import { Checkbox } from '../ui/checkbox'
+import { Label } from '../ui/label'
 
 export type UiFormFieldProps = {
     control: Control<any>
@@ -38,7 +44,7 @@ export type InputProps = {
 type CombinedProps = UiFormFieldProps & InputProps;
 
 const RenderFormField = ({ field, props }: { field: any, props: CombinedProps }) => {
-    const { fieldType, iconSrc, iconAlt, placeholder, disabled } = props
+    const { name, label, fieldType, iconSrc, iconAlt, placeholder, disabled, renderSkeleton, dateFormat, showTimeSelect } = props
 
     switch (fieldType) {
         case UiFormFieldType.INPUT:
@@ -61,19 +67,90 @@ const RenderFormField = ({ field, props }: { field: any, props: CombinedProps })
             )
 
         case UiFormFieldType.CHECKBOX:
-            return <input type="checkbox" {...field} />
+            return (
+                <FormControl>
+                    <div className="flex items-center space-x-2">
+                        <Checkbox
+                            id={name}
+                            checked={field.value}
+                            onCheckedChange={field.onChange}
+                        />
+                        <Label
+                            htmlFor={name}
+                            className="checkbox-label"
+                        >
+                            {label}
+                        </Label>
+                    </div>
+                </FormControl>
+            )
+
         case UiFormFieldType.PHONE_INPUT:
             return (<FormControl>
-                <PhoneInput 
-                {...field} defaultCountry='IN' 
-                placeholder={placeholder} 
-                international 
-                withCountryCallingCode
-                value={field.value}
-                onChange={field.onChange}
-                className='input-phone'
+                <PhoneInput
+                    {...field} defaultCountry='IN'
+                    placeholder={placeholder}
+                    international
+                    withCountryCallingCode
+                    value={field.value}
+                    onChange={field.onChange}
+                    className='input-phone'
                 />
             </FormControl>)
+
+        case UiFormFieldType.DATE_PICKER:
+            return (
+                <div className="flex rounded-md border border-dark-500 bg-dark-400">
+                    <Image src={"/assets/icons/calendar.svg"} alt="calendar" width={24} height={24} className='ml-2' />
+                    <FormControl>
+                        <DatePicker
+                            selected={field.value}
+                            onChange={(date) => field.onChange(date)}
+                            className="shad-input border-0"
+                            dateFormat={dateFormat ?? 'dd/MM/yyyy'}
+                            showTimeSelect={showTimeSelect ?? false}
+                            timeInputLabel='Time:'
+                            wrapperClassName='date-picker'
+                        />
+                    </FormControl>
+                </div>
+            )
+
+        case UiFormFieldType.SKELETON:
+            return renderSkeleton ? renderSkeleton(field) : null
+
+
+        case UiFormFieldType.SELECT:
+            return (
+                <FormControl>
+                    <Select
+                        onValueChange={field.onChange}
+                        defaultValue={field.value}
+                    >
+                        <FormControl>
+                            <SelectTrigger className='shad-select-trigger'>
+                                <SelectValue placeholder={placeholder} />
+                            </SelectTrigger>
+                        </FormControl>
+                        <SelectContent className='shad-select-content'>
+                            {props.children}
+                        </SelectContent>
+                    </Select>
+                </FormControl>
+            )
+
+        case UiFormFieldType.TEXTAREA:
+            return (
+                <FormControl>
+                    <Textarea
+                        {...field}
+                        placeholder={placeholder}
+                        disabled={disabled}
+                        className='shad-textarea border-0'
+                    />
+                </FormControl>
+            )
+
         default:
             break;
     }
