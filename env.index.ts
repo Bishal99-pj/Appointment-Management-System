@@ -8,7 +8,8 @@ const envVariableSchema = z.object({
     APPWRITE_DOCTOR_COLLECTION_ID: z.string(),
     APPWRITE_APPOINTMENT_COLLECTION_ID: z.string(),
     NEXT_PUBLIC_APPWRITE_STORAGE_ID: z.string(),
-    NEXT_PUBLIC_APPWRITE_CLOUD_BASE_URL: z.string()
+    NEXT_PUBLIC_APPWRITE_CLOUD_BASE_URL: z.string(),
+    NEXT_PUBLIC_ADMIN_OTP: z.string(),
 })
 
 envVariableSchema.parse(process.env)
