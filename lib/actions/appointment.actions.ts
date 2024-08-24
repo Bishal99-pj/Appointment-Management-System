@@ -3,8 +3,9 @@
 import { AppwriteException, ID, Models, Query } from "node-appwrite"
 import { APPWRITE_APPOINTMENT_COLLECTION_ID, APPWRITE_DATABASE_ID, aw_databases } from "../appwrite.config"
 import { parseStringify } from "../utils"
-import { CreateAppointmentParams } from "@/types"
+import { CreateAppointmentParams, UpdateAppointmentParams } from "@/types"
 import { Appointment } from "@/types/appwrite.type"
+import { revalidatePath } from "next/cache"
 
 export const createAppointment = async (createAppointmentRequest: CreateAppointmentParams) => {
     try {
@@ -15,6 +16,28 @@ export const createAppointment = async (createAppointmentRequest: CreateAppointm
             createAppointmentRequest
         )
         return parseStringify<Models.Document>(newAppointment)
+    } catch (err) {
+        if (err instanceof AppwriteException)
+            console.error(err)
+    }
+}
+
+export const updateAppointment = async ({ appointmentId, userId, appointment, type }: UpdateAppointmentParams) => {
+    try {
+        const updatedAppointment = await aw_databases.updateDocument(
+            APPWRITE_DATABASE_ID,
+            APPWRITE_APPOINTMENT_COLLECTION_ID,
+            appointmentId,
+            appointment
+        )
+        
+        if (!updatedAppointment) throw new Error('Appointment does not exist')
+        // SMS notifications service
+
+        /* by pass cache and refetch updated data from server */
+        revalidatePath("/admin")
+        return parseStringify<Models.Document>(updatedAppointment)
+
     } catch (err) {
         if (err instanceof AppwriteException)
             console.error(err)

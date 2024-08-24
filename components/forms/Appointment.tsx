@@ -17,7 +17,8 @@ import Image from "next/image"
 import { Doctors } from "@/constants"
 import { getAppointmentSchema } from "@/lib/form-validation"
 import { CreateAppointmentParams, Status } from "@/types"
-import { createAppointment } from "@/lib/actions/appointment.actions"
+import { createAppointment, updateAppointment } from "@/lib/actions/appointment.actions"
+import { Appointment } from "@/types/appwrite.type"
 
 export enum UiFormFieldType {
     INPUT = 'input',
@@ -30,7 +31,15 @@ export enum UiFormFieldType {
     SKELETON = 'skeleton'
 }
 
-export default function AppointmentForm({ type, userId, patientId }: { type: 'create' | 'cancel' | 'schedule', userId: string, patientId: string }) {
+type AppointmentFormProps = {
+    type: 'create' | 'schedule' | 'cancel',
+    userId: string,
+    patientId: string,
+    appointment?: Appointment,
+    setOpen: React.Dispatch<React.SetStateAction<boolean>>
+}
+
+export default function AppointmentForm({ type, userId, patientId, appointment }: AppointmentFormProps) {
     const router = useRouter()
     const [isLoading, setIsLoading] = useState(false)
 
@@ -93,10 +102,26 @@ export default function AppointmentForm({ type, userId, patientId }: { type: 'cr
 
                 const appointment = await createAppointment(appointmentData)
 
-                if(appointment){
+                if (appointment) {
                     form.reset();
                     router.push(`/users/${userId}/new-appointment/success?appointmentId=${appointment.$id}`)
                 }
+            } else if (type === 'schedule' && appointment) {
+
+            } else {
+                const appointmentToUpdate = {
+                    userId,
+                    appointmentId: appointment?.$id!,
+                    appointment: {
+                        primaryPhysician: formData.primaryPhysician,
+                        schedule: formData.schedule,
+                        cancellationReason: formData.cancellationReason,
+                        note: formData.note,
+                        status
+                    },
+                    type
+                }
+                const updatedAppointment = await updateAppointment(appointmentToUpdate)
             }
         } catch (e) {
             console.error(e);
