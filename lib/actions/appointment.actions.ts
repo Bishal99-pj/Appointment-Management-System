@@ -1,7 +1,7 @@
 "use server"
 
 import { AppwriteException, ID, Models, Query } from "node-appwrite"
-import { APPWRITE_APPOINTMENT_COLLECTION_ID, APPWRITE_DATABASE_ID, aw_databases, aw_messaging } from "../appwrite.config"
+import { APPWRITE_APPOINTMENT_COLLECTION_ID, APPWRITE_DATABASE_ID, aw_databases, aw_messaging } from "@/lib/appwrite.config"
 import { formatDateTime, parseStringify } from "../utils"
 import { CreateAppointmentParams, UpdateAppointmentParams } from "@/types"
 import { Appointment } from "@/types/appwrite.type"
