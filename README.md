@@ -1,4 +1,4 @@
-## Appointment Management CRUD
+## Appointment Management CRUD 🩺
 
 Appointease is a comprehensive yet generic management system designed to streamline the process of managing bookings or appointments especially for health care service providers. This application provides a seamless user experience with robust form validation, secure role-based access, and real-time messaging features, all powered by a modern tech stack including Next.js, TypeScript, Appwrite and more.
 
