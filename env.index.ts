@@ -10,6 +10,7 @@ const envVariableSchema = z.object({
     NEXT_PUBLIC_APPWRITE_STORAGE_ID: z.string(),
     NEXT_PUBLIC_APPWRITE_CLOUD_BASE_URL: z.string(),
     NEXT_PUBLIC_ADMIN_OTP: z.string(),
+    SENTRY_AUTH_TOKEN: z.string()
 })
 
 envVariableSchema.parse(process.env)
