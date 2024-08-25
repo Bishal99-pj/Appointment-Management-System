@@ -59,7 +59,7 @@ const Admin = async () => {
                 {
                     appointments?.documents.length
                     &&
-                    <DataTable columns={columns} data={appointments?.documents} />
+                    <DataTable columns={columns as any} data={appointments?.documents} />
                 }
 
             </main>
