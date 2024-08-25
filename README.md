@@ -1,33 +1,24 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+## Appointment Management CRUD
 
-## Getting Started
 
-First, run the development server:
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## Features ✨
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+- 🛠️ **Next.js Server Actions**: Leveraged the power of Next.js server actions to isolate service calls and improve performance.
+- ✅ **Form Validation**: Implemented robust form validation using `react-hook-form` for a better user experience.
+- 🎣 **Custom Hooks**: Simplified and reused complex logic across components.
+- 🛡️ **Error Logging**: Integrated Sentry to efficiently track and monitor errors and user metrics across the entire application.
+- 📧 **Messaging Service**: Integrated Twilio for sending SMS confirmation to users about the current status of the appointment.
+- 💾 **Appwrite DB**: Used Appwrite as the backend database for managing and storing data.
+- 🔒 **Role-Based Authorization**: Implemented role-based authorization to ensure secure access control.
+- 📊 **Admin Dashboard**: Built an admin dashboard using a custom datatable component to manage and display statistics effectively.
+- 🧑‍💻 **TypeScript**: Utilized TypeScript with Zod validation schemas to ensure end-to-end type safety.
 
 ## Learn More
 
 To learn more about Next.js, take a look at the following resources:
 
 - [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
 
 ## Deploy on Vercel
 
