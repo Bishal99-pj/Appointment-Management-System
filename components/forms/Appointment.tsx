@@ -145,7 +145,7 @@ export default function AppointmentForm({ type, userId, patientId, appointment, 
             {
                 type === 'create' &&
                 <section className="mb-12 space-y-4">
-                    <h1 className="header">Get ready 🙋🏻</h1>
+                    <h1 className="header">New appointment 🧑🏻‍⚕️</h1>
                     <p className="text-dark-700">Schedule your appointment</p>
                 </section>
             }

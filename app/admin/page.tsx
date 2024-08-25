@@ -14,9 +14,9 @@ const Admin = async () => {
         <div className="mx-auto flex max-w-7xl flex-col space-y-14">
             <header className="admin-header">
 
-                <Link href="/" className="cursor-pointer">
+                <Link href="/">
                     <Image
-                        src="/assets/icons/logo-full.svg"
+                        src="/assets/icons/logo-full.png"
                         height={32}
                         width={162}
                         alt="logo"
@@ -31,7 +31,7 @@ const Admin = async () => {
                 <section className="w-full space-y-4">
                     <h1 className="header">Welcome 👋</h1>
                     <p className="text-dark-700">
-                        Start the day with managing new appointments
+                        Start the day by managing new appointments
                     </p>
                 </section>
 

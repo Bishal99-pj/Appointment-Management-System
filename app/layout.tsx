@@ -13,7 +13,7 @@ const poppins = Poppins({
 
 export const metadata: Metadata = {
   title: "Appoint Ease",
-  description: "An appointment system that fulfills all your needs",
+  description: "An appointment CRUD system that fulfills all your needs",
 };
 
 export default function RootLayout({

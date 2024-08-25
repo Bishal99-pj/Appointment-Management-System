@@ -17,7 +17,7 @@ const AppointmentSuccess = async ({ params: { userId }, searchParams }: SearchPa
   const user = await getUser(userId)
 
   const doc = Doctors.find(doc => doc.name === appointment?.primaryPhysician)
-  
+
   if (user)
     Sentry.metrics.set("user_appointment_success", user.name);
 
@@ -26,7 +26,7 @@ const AppointmentSuccess = async ({ params: { userId }, searchParams }: SearchPa
       <div className="success-img">
         <Link href='/'>
           <Image
-            src="/assets/icons/logo-full.svg"
+            src="/assets/icons/logo-full.png"
             height={1000}
             width={1000}
             alt="logo"
@@ -77,7 +77,7 @@ const AppointmentSuccess = async ({ params: { userId }, searchParams }: SearchPa
           <Link href={`/users/${userId}/new-appointment`}>New appointment</Link>
         </Button>
 
-        <p className="copyright mt-6 lg:mt-10 py-12">
+        <p className="copyright">
           © 2024. Appoint Ease | All rights reserved.
         </p>
       </div>

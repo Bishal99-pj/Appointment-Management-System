@@ -12,24 +12,26 @@ export default function Home({ searchParams }: SearchParamProps) {
       {isAdmin &&
         <ModalOtpVerification
         />}
-      <section className="remove-scrollbar container my-auto">
+
+      <section className="remove-scrollbar container max-h-screen">
         <div className="sub-container max-w-[500px]">
-          <Image className="mb-12 h-10 w-fit" src="/assets/icons/logo-full.svg" width={1000} height={1000} alt="logo" />
+          
+          <Image className="mb-12 h-10 w-fit cursor-pointer" src="/assets/icons/logo-full.png" width={1000} height={1000} alt="logo" />
 
           <SignUpForm />
 
-          <div className="text-14-regular mt-20 flex justify-between">
-            <p className="justify-items-end text-dark-600 xl:text-left">
+          <div className="flex mt-10 mb-2 justify-between">
+            <p className="copyright">
               © 2024. Appoint Ease | All rights reserved.
             </p>
-            <Link href="/?admin=true" className="text-green-500">
+            <Link href="/?admin=true" className="text-green-500 text-14-regular">
               Admin
             </Link>
           </div>
         </div>
       </section>
 
-      <Image src="/assets/images/onboarding-img.png" height={1000} width={1000} alt="onboarding" className="side-img w-1/2" priority={true} />
+      <Image src="/assets/images/onboarding-img.png" height={1000} width={1000} alt="onboarding" className="max-w-3xl max-h-full hidden md:block" priority={true} />
     </div>
   );
 }
