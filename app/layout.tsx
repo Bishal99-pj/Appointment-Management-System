@@ -23,6 +23,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <head>
+        <link rel="icon" href="/favicon.ico" type="image/x-icon" />
+      </head>
       <body className={cn(poppins.className, 'min-h-screen antialiased bg-gray-950 text-slate-50')}>
         <ThemeProvider
           attribute="class"
