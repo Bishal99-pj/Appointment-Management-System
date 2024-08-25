@@ -18,6 +18,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
+import Image from "next/image"
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
@@ -36,11 +37,11 @@ export default function DataTable<TData, TValue>({
   })
 
   return (
-    <div className="rounded-md border">
-      <Table>
-        <TableHeader>
+    <div className="data-table">
+      <Table className="shad-table">
+        <TableHeader className="bg-dark-200">
           {table.getHeaderGroups().map((headerGroup) => (
-            <TableRow key={headerGroup.id}>
+            <TableRow className="shad-table-row-header" key={headerGroup.id}>
               {headerGroup.headers.map((header) => {
                 return (
                   <TableHead key={header.id}>
@@ -59,7 +60,7 @@ export default function DataTable<TData, TValue>({
         <TableBody>
           {table.getRowModel().rows?.length ? (
             table.getRowModel().rows.map((row) => (
-              <TableRow
+              <TableRow className="shad-table-row"
                 key={row.id}
                 data-state={row.getIsSelected() && "selected"}
               >
@@ -71,7 +72,7 @@ export default function DataTable<TData, TValue>({
               </TableRow>
             ))
           ) : (
-            <TableRow>
+            <TableRow className="shad-table-row">
               <TableCell colSpan={columns.length} className="h-24 text-center">
                 No results.
               </TableCell>
@@ -79,22 +80,35 @@ export default function DataTable<TData, TValue>({
           )}
         </TableBody>
       </Table>
-      <div className="flex items-center justify-end space-x-2 py-4">
+      <div className="table-actions">
         <Button
+          className="shad-gray-btn"
           variant="outline"
           size="sm"
           onClick={() => table.previousPage()}
           disabled={!table.getCanPreviousPage()}
         >
-          Previous
+          <Image
+            src="/assets/icons/arrow.svg"
+            alt="Previous"
+            width={24}
+            height={24}
+          />
         </Button>
         <Button
+          className="shad-gray-btn"
           variant="outline"
           size="sm"
           onClick={() => table.nextPage()}
           disabled={!table.getCanNextPage()}
         >
-          Next
+          <Image
+            src="/assets/icons/arrow.svg"
+            alt="Previous"
+            width={24}
+            height={24}
+            className="rotate-180"
+          />
         </Button>
       </div>
     </div>

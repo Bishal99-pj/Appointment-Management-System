@@ -63,7 +63,7 @@ export default function AppointmentForm({ type, userId, patientId, appointment, 
         resolver: zodResolver(AppointmentSchema),
         defaultValues: {
             primaryPhysician: appointment ? appointment.primaryPhysician : "",
-            schedule: appointment ? appointment.schedule : new Date(),
+            schedule: appointment ? new Date(appointment.schedule) : new Date(),
             reason: appointment ? appointment.reason : "",
             note: appointment ? appointment.note : "",
             cancellationReason: "",

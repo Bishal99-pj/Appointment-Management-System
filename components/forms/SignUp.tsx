@@ -25,7 +25,7 @@ export enum UiFormFieldType {
     SKELETON = 'skeleton'
 }
 
-export default function SignUp() {
+export default function SignUpForm() {
     const router = useRouter()
     const [isLoading, setIsLoading] = useState(false)
 
