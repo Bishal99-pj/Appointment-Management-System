@@ -5,13 +5,21 @@ import { formatDateTime } from '@/lib/utils'
 import { SearchParamProps } from '@/types'
 import Image from 'next/image'
 import Link from 'next/link'
-import React from 'react'
+import React, { use } from 'react'
+import * as Sentry from "@sentry/nextjs";
+import { getUser } from '@/lib/actions/patient.actions'
+
 
 const AppointmentSuccess = async ({ params: { userId }, searchParams }: SearchParamProps) => {
   const appointmentId = (searchParams.appointmentId as string) || ''
   const appointment = await getAppointment(appointmentId)
 
+  const user = await getUser(userId)
+
   const doc = Doctors.find(doc => doc.name === appointment?.primaryPhysician)
+  
+  if (user)
+    Sentry.metrics.set("user_appointment_success", user.name);
 
   return (
     <div className='flex h-screen px-12'>

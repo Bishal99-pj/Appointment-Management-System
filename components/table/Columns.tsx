@@ -5,6 +5,13 @@ import { ColumnDef } from "@tanstack/react-table"
 
 import { Appointment } from '@/types/appwrite.type'
 import Badge from '../Badge'
+import {
+    Tooltip,
+    TooltipContent,
+    TooltipProvider,
+    TooltipTrigger,
+} from "@/components/ui/tooltip"
+
 import { formatDateTime } from '@/lib/utils'
 import { Doctors } from '@/constants'
 import Image from 'next/image'
@@ -43,7 +50,21 @@ export const columns: ColumnDef<Appointment>[] = [
         header: 'Appointment',
         cell: ({ row }) => {
             const appointment = row.original
-            return <p className="text-14-medium">{formatDateTime(appointment.schedule).dateTime}</p>
+            return (
+                <TooltipProvider>
+                    <Tooltip delayDuration={200}>
+                        <TooltipTrigger>
+                            <p className="text-14-medium cursor-pointer">{formatDateTime(appointment.schedule).dateTime}</p>
+                        </TooltipTrigger>
+                        {
+                            appointment.note.length &&
+                            <TooltipContent className='bg-green-300 border-0'>
+                                <p className='capitalize text-dark-300'>{appointment.reason}</p>
+                            </TooltipContent>
+                        }
+                    </Tooltip>
+                </TooltipProvider>
+            )
         },
     },
     {
