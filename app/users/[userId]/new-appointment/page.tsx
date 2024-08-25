@@ -27,7 +27,7 @@ export default async function NewAppointment({ params: { userId } }: SearchParam
         </div>
       </section>
 
-      <Image src="/assets/images/appointment-img.png" height={1000} width={1000} alt="appointment" className="side-img max-w-2xl max-h-screen" priority={true} />
+      <Image src="/assets/images/appointment-img.webp" height={1000} width={1000} alt="appointment" className="side-img max-w-2xl max-h-screen" priority={true} />
     </div>
   );
 }

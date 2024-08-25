@@ -31,7 +31,7 @@ export default function Home({ searchParams }: SearchParamProps) {
         </div>
       </section>
 
-      <Image src="/assets/images/onboarding-img.png" height={1000} width={1000} alt="onboarding" className="max-w-3xl max-h-full hidden md:block" priority={true} />
+      <Image src="/assets/images/onboarding-img.webp" height={1000} width={1000} alt="onboarding" className="max-w-3xl max-h-screen object-cover hidden md:block" priority={true} />
     </div>
   );
 }
