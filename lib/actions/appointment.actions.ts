@@ -1,8 +1,8 @@
 "use server"
 
 import { AppwriteException, ID, Models, Query } from "node-appwrite"
-import { APPWRITE_APPOINTMENT_COLLECTION_ID, APPWRITE_DATABASE_ID, aw_databases } from "../appwrite.config"
-import { parseStringify } from "../utils"
+import { APPWRITE_APPOINTMENT_COLLECTION_ID, APPWRITE_DATABASE_ID, aw_databases, aw_messaging } from "../appwrite.config"
+import { formatDateTime, parseStringify } from "../utils"
 import { CreateAppointmentParams, UpdateAppointmentParams } from "@/types"
 import { Appointment } from "@/types/appwrite.type"
 import { revalidatePath } from "next/cache"
@@ -30,9 +30,26 @@ export const updateAppointment = async ({ appointmentId, userId, appointment, ty
             appointmentId,
             appointment
         )
-        
+
         if (!updatedAppointment) throw new Error('Appointment does not exist')
+
         // SMS notifications service
+        let SMSmessage = 'Your appointment has been'
+
+        switch (type) {
+            case "schedule":
+                SMSmessage += ` scheduled for ${formatDateTime(appointment.schedule).dateTime} with Dr. ${appointment.primaryPhysician}`
+                break;
+            case "cancel":
+                SMSmessage +=
+                    ` cancelled due to the following reason:
+                    "${appointment.cancellationReason}"`
+                break;
+            default:
+                break;
+        }
+
+        await sendSMSnotification(userId, SMSmessage)
 
         /* by pass cache and refetch updated data from server */
         revalidatePath("/admin")
@@ -92,5 +109,17 @@ export const getRecentApponitments = async () => {
         return parseStringify(refinedResponse)
     } catch (err) {
         console.error(err);
+    }
+}
+
+
+export const sendSMSnotification = async (userId: string, message: string) => {
+    try {
+        const messageSMS = await aw_messaging.createSms(ID.unique(), message, [], [userId])
+        return parseStringify<Models.Message>(messageSMS)
+
+    } catch (err) {
+        if (err instanceof AppwriteException)
+            console.error(err)
     }
 }
