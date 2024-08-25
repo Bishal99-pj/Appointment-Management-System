@@ -16,6 +16,9 @@ export const createAppointment = async (createAppointmentRequest: CreateAppointm
             ID.unique(),
             createAppointmentRequest
         )
+
+        /* important for first visit after a new appointment is created */
+        revalidatePath("/admin")
         return parseStringify<Models.Document>(newAppointment)
     } catch (err) {
         if (err instanceof AppwriteException)
